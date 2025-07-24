@@ -1,0 +1,48 @@
+name: Deploy CDK on Push
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy CDK Stack
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: eu-west-2
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::654654341678:role/GitHubActionsRole
+          aws-region: eu-west-2
+
+      - name: Verify CDK version
+        run: npx aws-cdk --version
+
+      - name: Deploy Organisations Stack
+        run: npx aws-cdk deploy org-stack --require-approval never
+
+      - name: Deploy SSO Stack
+        run: npx aws-cdk deploy sso-stack --require-approval never
