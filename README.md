@@ -1,14 +1,42 @@
-# Welcome to your CDK TypeScript project
+# Amazon Web Services Infrastructure-as-Code
 
-This is a blank project for CDK development with TypeScript.
+Infrastructure-as-Code (IaC) setup for managing AWS cloud resources using AWS CDK and GitHub Actions for CI/CD automation.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Requirements
 
-## Useful commands
+Make sure you have Node and NPM installed:
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+```bash
+node -v
+# v22.17.0
+```
+
+```bash
+npm -v
+# 11.1.0
+```
+
+## Installation
+
+Run the commands:
+
+```bash
+npm install
+```
+
+```bash
+cdk deploy --all
+```
+
+## Security Vulnerabilities
+
+Please review our [security policy](https://github.com/SamHillierDev/aws-infra/security/policy) on how to report security vulnerabilities.
+
+## Credits
+
+- [Sam Hillier](https://github.com/SamHillierDev)
+- [All Contributors](https://github.com/SamHillierDev/aws-infra/contributors)
+
+## License
+
+Please see [License File](https://github.com/SamHillierDev/aws-infra/blob/main/LICENSE.md) for more information.
