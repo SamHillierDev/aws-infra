@@ -1,8 +1,9 @@
 import * as cdk from "aws-cdk-lib";
 import "source-map-support/register";
+import { GitHubActionsStack } from "../lib/github-actions-stack";
+import { BillingStack } from "../lib/billing-stack";
 import { OrganizationStack } from "../lib/org-stack";
 import { SsoStack } from "../lib/sso-stack";
-import { GitHubActionsStack } from "../lib/github-actions-stack";
 
 interface EnvironmentConfig {
   account: string;
@@ -14,6 +15,9 @@ interface StackConfig {
   existingAccountId?: string;
   ssoInstanceArn?: string;
   accountId?: string;
+  alertEmails?: string[];
+  monthlyBudgetAmount?: number;
+  budgetThresholds?: number[];
   env?: EnvironmentConfig;
 }
 
@@ -46,6 +50,13 @@ const app = new cdk.App();
 try {
   createStack(app, GitHubActionsStack, "github-actions-stack", {
     description: "Sets up OIDC provider and IAM role for GitHub Actions CI/CD integration",
+  });
+
+  createStack(app, BillingStack, "billing-stack", {
+    description: "AWS Billing and Budget Management with alerts",
+    alertEmails: ["sam@hillier.uk"],
+    monthlyBudgetAmount: 10,
+    budgetThresholds: [50, 100],
   });
 
   const orgStack = createStack(app, OrganizationStack, "org-stack", {

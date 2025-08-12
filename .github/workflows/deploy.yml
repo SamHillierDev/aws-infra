@@ -42,4 +42,4 @@ jobs:
         run: npx aws-cdk --version
 
       - name: Deploy CDK Stacks
-        run: npx aws-cdk deploy github-actions-stack org-stack sso-stack --require-approval never
+        run: npx aws-cdk deploy billing-stack github-actions-stack org-stack sso-stack --require-approval never
