@@ -41,8 +41,5 @@ jobs:
       - name: Verify CDK version
         run: npx aws-cdk --version
 
-      - name: Deploy Organisations Stack
-        run: npx aws-cdk deploy org-stack --require-approval never
-
-      - name: Deploy SSO Stack
-        run: npx aws-cdk deploy sso-stack --require-approval never
+      - name: Deploy CDK Stacks
+        run: npx aws-cdk deploy github-actions-stack org-stack sso-stack --require-approval never
