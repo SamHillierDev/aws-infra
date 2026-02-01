@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import "source-map-support/register";
 import { GitHubActionsStack } from "../lib/github-actions-stack";
-import { BillingStack } from "../lib/billing-stack";
+import { AlertsStack } from "../lib/alerts-stack";
 import { OrganizationStack } from "../lib/org-stack";
 import { SsoStack } from "../lib/sso-stack";
 
@@ -16,8 +16,23 @@ interface StackConfig {
   ssoInstanceArn?: string;
   accountId?: string;
   alertEmails?: string[];
-  monthlyBudgetAmount?: number;
-  budgetThresholds?: number[];
+  alertPhoneNumbers?: string[];
+  budgets?: Array<{
+    name: string;
+    amount: number;
+    unit?: 'USD' | 'GBP' | 'EUR';
+    timeUnit?: 'DAILY' | 'MONTHLY' | 'QUARTERLY' | 'ANNUALLY';
+    alertThresholds?: number[];
+  }>;
+  anomalyDetection?: {
+    enabled?: boolean;
+    thresholdAmount?: number;
+    frequency?: 'DAILY' | 'IMMEDIATE' | 'WEEKLY';
+  };
+  emergencyUserMonitoring?: {
+    enabled?: boolean;
+    userName: string;
+  };
   env?: EnvironmentConfig;
 }
 
@@ -52,11 +67,19 @@ try {
     description: "Sets up OIDC provider and IAM role for GitHub Actions CI/CD integration",
   });
 
-  createStack(app, BillingStack, "billing-stack", {
-    description: "AWS Billing and Budget Management with alerts",
+  createStack(app, AlertsStack, "alerts-stack", {
+    description: "Infrastructure alerts, budgets, and cost anomaly detection",
     alertEmails: ["sam@hillier.uk"],
-    monthlyBudgetAmount: 10,
-    budgetThresholds: [50, 100],
+    budgets: [
+      {
+        name: "Monthly Budget",
+        amount: 10,
+        alertThresholds: [50, 80, 100],
+      },
+    ],
+    anomalyDetection: {
+      thresholdAmount: 10,
+    },
   });
 
   const orgStack = createStack(app, OrganizationStack, "org-stack", {
