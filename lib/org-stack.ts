@@ -4,7 +4,9 @@ import * as organizations from 'aws-cdk-lib/aws-organizations';
 import { applyStandardTags } from './tags';
 
 export interface OrganizationStackProps extends cdk.StackProps {
+  organizationRootId: string;
   existingAccountId?: string;
+  accountEmail?: string;
 }
 
 export class OrganizationStack extends cdk.Stack {
@@ -16,16 +18,19 @@ export class OrganizationStack extends cdk.Stack {
     // Create Organizational Unit
     const projectOU = new organizations.CfnOrganizationalUnit(this, 'ProjectCS2TEAM', {
       name: 'Project-CS2TEAM',
-      parentId: 'r-59ls',
+      parentId: props.organizationRootId,
     });
 
     let accountId: string;
     if (props.existingAccountId) {
       accountId = props.existingAccountId;
     } else {
+      if (!props.accountEmail) {
+        throw new Error('accountEmail is required when creating a new account');
+      }
       const account = new organizations.CfnAccount(this, 'Account', {
         accountName: 'ProductionAccount',
-        email: 'admin@cs2.team',
+        email: props.accountEmail,
         parentIds: [projectOU.ref],
         roleName: 'OrganizationAccountAccessRole',
       });

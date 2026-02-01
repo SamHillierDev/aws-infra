@@ -4,8 +4,9 @@ import * as sso from 'aws-cdk-lib/aws-sso';
 import * as identitystore from 'aws-cdk-lib/aws-identitystore';
 import { applyStandardTags } from './tags';
 
-interface SsoStackProps extends cdk.StackProps {
+export interface SsoStackProps extends cdk.StackProps {
   ssoInstanceArn: string;
+  identityStoreId: string;
   accountId: string;
 }
 
@@ -57,7 +58,7 @@ export class SsoStack extends cdk.Stack {
       return new identitystore.CfnGroup(this, id, {
         displayName,
         description,
-        identityStoreId: 'd-9c67589b5e',
+        identityStoreId: props.identityStoreId,
       });
     };
 

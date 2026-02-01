@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
+import { applyStandardTags } from "./tags";
 
 export class GitHubActionsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -35,5 +36,7 @@ export class GitHubActionsStack extends cdk.Stack {
       value: role.roleArn,
       description: "GitHub Actions Role ARN",
     });
+
+    applyStandardTags(this);
   }
 }

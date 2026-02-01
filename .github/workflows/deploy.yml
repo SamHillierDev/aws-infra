@@ -13,6 +13,9 @@ jobs:
   deploy:
     name: Deploy CDK Stack
     runs-on: ubuntu-latest
+    concurrency:
+      group: cdk-deploy
+      cancel-in-progress: false
 
     env:
       AWS_REGION: eu-west-2
@@ -24,7 +27,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -33,13 +37,13 @@ jobs:
         run: npm run build
 
       - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::654654341678:role/GitHubActionsRole
           aws-region: eu-west-2
 
-      - name: Verify CDK version
-        run: npx aws-cdk --version
+      - name: CDK Diff
+        run: npx aws-cdk diff --all
 
       - name: Deploy CDK Stacks
         run: npx aws-cdk deploy github-actions-stack alerts-stack org-stack sso-stack --require-approval never

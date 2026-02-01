@@ -1,4 +1,5 @@
 import * as cdk from "aws-cdk-lib";
+import { IConstruct } from "constructs";
 
 export interface StandardTags {
   Environment: "dev" | "staging" | "prod";
@@ -7,13 +8,13 @@ export interface StandardTags {
 
 export const DEFAULT_TAGS: StandardTags = {
   Environment: "prod",
-  Project: "example-project",
+  Project: "aws-infra",
 };
 
 export function applyStandardTags(
-  scope: any,
+  scope: IConstruct,
   tags: Partial<StandardTags> = {}
-) {
+): void {
   const finalTags = { ...DEFAULT_TAGS, ...tags };
 
   Object.entries(finalTags).forEach(([key, value]) => {
